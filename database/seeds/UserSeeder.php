@@ -12,7 +12,7 @@ class UserSeeder extends Seeder
      */
     public function run()
     {
-        // User table truncate before seeding
+        // Truncate User table before seeding
         User::truncate();
         User::create([
             'name' => 'Admin',

@@ -1,0 +1,67 @@
+<form class="form_container" action="{{ route('company.store') }}" enctype="multipart/form-data">
+    <div class="form-group row">
+        <label for="name" class="col-sm-3 col-form-label">{{ __('lang.name') }}:</label>
+        <div class="col-sm-9">
+            <input type="text" name="name" class="form-control" id="name" placeholder="{{ __('lang.name') }}">
+            <span style="display: none;" id="name_error" class="help-inline"></span>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label for="email" class="col-sm-3 col-form-label">{{ __('lang.email') }}:</label>
+        <div class="col-sm-9">
+            <input type="text" name="email" class="form-control" id="email" placeholder="{{ __('lang.email') }}">
+            <span style="display: none;" id="email_error" class="help-inline"></span>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label for="website" class="col-sm-3 col-form-label">{{ __('lang.website') }}:</label>
+        <div class="col-sm-9">
+            <input type="text" name="website" class="form-control" id="website" placeholder="{{ __('lang.website') }}">
+        </div>
+    </div>
+    <div class="form-group row">
+        <label for="logo" class="col-sm-3 col-form-label">{{ __('lang.logo') }}:</label>
+        <div class="col-sm-9">
+            <input type="file" name="logo" class="form-control" id="logo" placeholder="{{ __('lang.logo') }}" maxlength="10">
+            <span style="display: none;" id="logo_error" class="help-inline"></span>
+        </div>
+    </div>
+    
+    <a class="btn btn-primary float-right submit_form">{{ __('lang.create') }}</a>
+</form>
+
+<script type="text/javascript">
+    $('.submit_form').on('click', (e) => {
+        
+        let _$form = $(e.target).closest('form');
+        let _formData = new FormData(_$form[0]);
+
+        $.ajax({
+            type: "POST",
+            url: _$form.attr('action'),
+            data: _formData,
+            processData: false,
+            contentType: false,
+            cache: false,
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+            },
+            success: function(data) {
+                if(data.status) {
+                    $('#empModal').modal('hide');
+
+                    $.get("{{ route('company.index') }}", function(data, status){
+                        $('#module_content_container').html(data);
+                    });
+                } else {
+                    !!data.errors.name ? $('#name_error').show().text(data.errors.name[0]) : $('#name_error').hide().text('');
+                    !!data.errors.email ? $('#email_error').show().text(data.errors.email[0]) : $('#email_error').hide().text('');
+                    !!data.errors.logo ? $('#logo_error').show().text(data.errors.logo[0]) : $('#logo_error').hide().text('');
+                }
+            },
+            error: function(err) {
+                console.log(err);
+            }
+        });
+    });
+</script>
