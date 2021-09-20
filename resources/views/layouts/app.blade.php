@@ -10,9 +10,11 @@
     <title>{{ config('app.name', 'CRM') }}</title>
 
     <!-- Scripts -->
-    <script src="{{ asset('js/jquery.min.js') }}"></script>
-    <script src="{{ asset('js/bootstrap.min.js') }}"></script>
-    <script src="{{ asset('js/app.js') }}" defer></script>
+    <script type="text/javascript" src="{{ asset('js/jquery.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('js/bootstrap.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('js/app.js') }}" defer></script>
+    <script type="text/javascript" src="{{ asset('js/common.js') }}"></script>
+
     <!--<script src="{{ asset('js/all.min.js') }}" defer></script>-->
 
     <!-- Fonts -->
@@ -91,7 +93,17 @@
                 let _url = "{{ route('change_language') }}";
                 window.location.href = _url + "?lang="+ $(e.target).val();
             });
+            
+            $('.pagination a').on('click', (e) => {
+                e.preventDefault();
+
+                let _url = $(e.target).attr('href');
+                $.get(_url, (data) => {
+                    $('#module_content_container').html(data);
+                });
+            });
         });
-</script>
+    </script>
+    
 </body>
 </html>

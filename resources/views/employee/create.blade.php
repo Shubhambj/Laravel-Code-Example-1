@@ -43,41 +43,21 @@
         </div>
     </div>
     
-    <a class="btn btn-primary float-right submit_form">{{ __('lang.create') }}</a>
+    <a href="javascript:void(0);" onclick="submitForm(this, callback)" class="btn btn-primary float-right">{{ __('lang.create') }}</a>
 </form>
 
 <script type="text/javascript">
-    $('.submit_form').on('click', (e) => {
-        
-        let _$form = $(e.target).closest('form');
-        let _formData = new FormData(_$form[0]);
+    function callback(data) {
+        if(data.status) {
+            $('#commonModal').modal('hide');
 
-        $.ajax({
-            type: "POST",
-            url: _$form.attr('action'),
-            data: _formData,
-            processData: false,
-            contentType: false,
-            cache: false,
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
-            },
-            success: function(data) {
-                if(data.status) {
-                    $('#empModal').modal('hide');
-
-                    $.get("{{ route('employee.index') }}", function(data, status){
-                        $('#module_content_container').html(data);
-                    });
-                } else {
-                    !!data.errors.first_name ? $('#first_name_error').show().text(data.errors.first_name[0]) : $('#first_name_error').hide().text('');
-                    !!data.errors.last_name ? $('#last_name_error').show().text(data.errors.last_name[0]) : $('#last_name_error').hide().text('');
-                    !!data.errors.email ? $('#email_error').show().text(data.errors.email[0]) : $('#email_error').hide().text('');
-                }
-            },
-            error: function(err) {
-                console.log(err);
-            }
-        });
-    });
+            $.get("{{ route('employee.index') }}", function(data, status){
+                $('#module_content_container').html(data);
+            });
+        } else {
+            !!data.errors.first_name ? $('#first_name_error').show().text(data.errors.first_name[0]) : $('#first_name_error').hide().text('');
+            !!data.errors.last_name ? $('#last_name_error').show().text(data.errors.last_name[0]) : $('#last_name_error').hide().text('');
+            !!data.errors.email ? $('#email_error').show().text(data.errors.email[0]) : $('#email_error').hide().text('');
+        }
+    }
 </script>

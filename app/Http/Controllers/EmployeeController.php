@@ -66,8 +66,9 @@ class EmployeeController extends Controller
         $validationRules = [
             'first_name' => 'required|string',
             'last_name' => 'required|string',
-            'email' => 'email|unique:employees',
         ];
+        
+        $request->get('_method') === 'PUT' ?: $validationRules['email'] = 'email|unique:employees';
         
         return Validator::make($request->all(), $validationRules);
     }

@@ -65,9 +65,10 @@ class CompanyController extends Controller
     protected function validateInputs(Request $request) {
         $validationRules = [
             'name' => 'required|string',
-            'email' => 'email|unique:companies',
             'logo' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
         ];
+        
+        $request->get('_method') === 'PUT' ?: $validationRules['email'] = 'email|unique:companies';
         
         return Validator::make($request->all(), $validationRules);
     }

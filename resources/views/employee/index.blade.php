@@ -3,7 +3,7 @@
 
     <div class="card-body">
         
-        <a href="javascript:void(0);" data-url="{{ route('employee.create') }}" class="btn btn-warning float-right load_model_box" style="margin-bottom: 20px;">
+        <a href="javascript:void(0);" data-url="{{ route('employee.create') }}" onclick="loadModel(this)" class="btn btn-warning float-right load_model_box" style="margin-bottom: 20px;">
             {{ __('lang.add_employee') }}
         </a>
 
@@ -29,15 +29,15 @@
                         <td>{{ $employee->phone }}</td>
                         <td>{{ $employee->companyName }}</td>
                         <td>
-                            <a href="javascript:void(0);" data-url="{{ route('employee.show', ['id' => $employee->id]) }}" class="btn btn-warning load_model_box">
+                            <a href="javascript:void(0);" data-url="{{ route('employee.show', ['id' => $employee->id]) }}" onclick="loadModel(this);" class="btn btn-warning">
                                 <span class="glyphicon glyphicon-eye-open"></span>
                             </a>
 
-                            <a href="javascript:void(0);" data-url="{{ route('employee.edit', ['id' => $employee->id]) }}" class="btn btn-primary load_model_box">
+                            <a href="javascript:void(0);" data-url="{{ route('employee.edit', ['id' => $employee->id]) }}" onclick="loadModel(this);" class="btn btn-primary">
                                 <i class="fas fa-edit"></i>
                             </a>
 
-                            <a href="javascript:void(0);" onclick="deleteRecord(this);" data-url="{{ route('employee.destroy', ['id' => $employee->id]) }}" class="btn btn-danger">
+                            <a href="javascript:void(0);" data-url="{{ route('employee.destroy', ['id' => $employee->id]) }}" onclick="deleteRecord(this, loadAllRecords);" class="btn btn-danger">
                                 <i class="fas fa-trash"></i>
                             </a>
                         </td>
@@ -54,51 +54,21 @@
 
     </div>
 </div>
-
 <script type="text/javascript">
+    function loadAllRecords() {
+        $.get("{{ route('employee.index') }}", function(data){
+            $('#module_content_container').html(data);
+        });
+    }
+    
     $(() => {
-        
         $('.pagination a').on('click', (e) => {
             e.preventDefault();
 
             let _url = $(e.target).attr('href');
-
             $.get(_url, (data) => {
                 $('#module_content_container').html(data);
             });
         });
-
-        $('.load_model_box').on('click', (e) => {
-            e.preventDefault();
-            
-            let _url = $(e.target).data('url');
-            
-            $.get(_url, (data) => {
-                $('.modal-body').html(data);
-                $('#empModal').modal('show'); 
-            });
-        });
     });
-    
-    function deleteRecord(e) {
-        let _url = $(e).attr('data-url');
-            
-        $.ajax({
-            type: "POST",
-            method: "DELETE",
-            url: _url,
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            },
-            success: function(data) {
-                $.get("{{ route('employee.index') }}", function(data, status){
-                    $('#module_content_container').html(data);
-                });
-            },
-            error: function(err) {
-                console.log(err);
-            }
-        });
-    }
-
 </script>
